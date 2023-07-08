@@ -1,7 +1,8 @@
-package com.example.otmshare
+package com.example.otmshare.Views
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.otmshare.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
