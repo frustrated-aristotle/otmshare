@@ -34,4 +34,9 @@
             android:id="@+id/action_loginFragment_to_allSectionsFragment"
             app:destination="@id/allSectionsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/creatingSections"
+        android:name="com.example.otmshare.Views.CreatingSections"
+        android:label="fragment_creating_sections"
+        tools:layout="@layout/fragment_creating_sections" />
 </navigation>

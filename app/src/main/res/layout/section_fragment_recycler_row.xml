@@ -2,12 +2,14 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
-    xmlns:app = "http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+
+        >
 
         <androidx.cardview.widget.CardView
             android:visibility="visible"
@@ -25,7 +27,7 @@
             map:layout_constraintStart_toStartOf="parent"
             map:layout_constraintTop_toTopOf="parent"
             tools:context=".MainActivity"
-            map:cardBackgroundColor="#EABFBF"
+            android:background="@drawable/gradient"
             >
 
 
@@ -38,7 +40,7 @@
                     android:id="@+id/titleText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sezon 1 Bölüm iki"
+                    android:text="Sezon 1 Bölüm 3: Title"
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="10dp"
                     android:layout_weight="1"
@@ -49,7 +51,7 @@
                 />
             <View
                 android:layout_width="match_parent"
-                android:layout_height="5dp"
+                android:layout_height="3dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
@@ -66,7 +68,12 @@
                 android:textStyle="bold"
                 android:textFontWeight="900"
                 android:textColor="@color/black"
-
+                /> <TextView
+                android:id="@+id/urlText"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
                 />
 
             <LinearLayout
