@@ -1,5 +1,7 @@
 package com.example.otmshare.Views
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -64,7 +66,6 @@ class AllSectionsFragment : Fragment() {
             }.addOnFailureListener { exception ->
             println("Error getting documents: " + exception)
         }
-        val sectionList = listOf("Öğe 1", "Öğe 2", "Öğe 3") // Örnek bir öğe listesi
         binding.recyclerviewFragmentAllSections.layoutManager = LinearLayoutManager(context)
         binding.recyclerviewFragmentAllSections.adapter = recyclerViewAdapter
     }

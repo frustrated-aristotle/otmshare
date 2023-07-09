@@ -38,7 +38,7 @@ android {
         jvmTarget = '17'
     }
     compileOptions {
-        encoding = "UTF-8"
+        encoding = 'windows-1254'
     }
 }
 

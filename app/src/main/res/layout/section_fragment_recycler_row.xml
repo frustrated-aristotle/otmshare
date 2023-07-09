@@ -27,7 +27,7 @@
             map:layout_constraintStart_toStartOf="parent"
             map:layout_constraintTop_toTopOf="parent"
             tools:context=".MainActivity"
-            android:background="@drawable/gradient"
+
             >
 
 
