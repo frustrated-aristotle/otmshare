@@ -4,10 +4,9 @@
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:app = "http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
@@ -36,7 +35,7 @@
             android:orientation="vertical">
 
             <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/titleText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Sezon 1 Bölüm iki"
@@ -56,7 +55,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rounded_corner_splitter"/>
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/contentText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -78,13 +77,17 @@
 
 
                 <ImageView
+                    android:id="@+id/likeImage"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
-                    android:src="@drawable/baseline_thumb_up_off_alt_x"></ImageView>
+                    android:src="@drawable/baseline_thumb_up_off_alt_x">
+
+                </ImageView>
 
                 <ImageView
+                    android:id="@+id/saveImage"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginRight="10dp"

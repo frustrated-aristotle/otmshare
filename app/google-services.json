@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "348092862020",
+    "project_id": "otm-share",
+    "storage_bucket": "otm-share.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348092862020:android:282822bdf59d75e511b611",
+        "android_client_info": {
+          "package_name": "com.example.otmshare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "348092862020-b8a45j2fvcg52b01ea28kp0o7vr2mhl2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_29SvQh8evuuWPIPIkJTulOMl6ED3ZLI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "348092862020-b8a45j2fvcg52b01ea28kp0o7vr2mhl2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
