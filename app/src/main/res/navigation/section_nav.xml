@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/section_nav"
-    app:startDestination="@id/allSectionsFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/allSectionsFragment"
@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_allSectionsFragment_to_blankFragment"
             app:destination="@id/blankFragment" />
+        <action
+            android:id="@+id/action_allSectionsFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/blankFragment"
@@ -21,6 +24,14 @@
         tools:layout="@layout/fragment_blank" >
         <action
             android:id="@+id/action_blankFragment_to_allSectionsFragment"
+            app:destination="@id/allSectionsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.otmshare.Views.LoginFragment"
+        android:label="LoginFragment" >
+        <action
+            android:id="@+id/action_loginFragment_to_allSectionsFragment"
             app:destination="@id/allSectionsFragment" />
     </fragment>
 </navigation>

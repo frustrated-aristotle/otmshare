@@ -17,8 +17,6 @@ class AllSectionsFragment : Fragment() {
     private val recyclerViewAdapter = SectionFragmentRecyclerRowAdapter(listOf())
 
     private var _binding: FragmentAllSectionsBinding ? = null
-    // This property is only valid between onCreateView and
-// onDestroyView.
     private val binding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

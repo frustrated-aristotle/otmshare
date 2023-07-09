@@ -5,6 +5,7 @@ plugins {
 }
 
 apply plugin: 'kotlin-kapt'
+apply plugin: 'androidx.navigation.safeargs'
 android {
     namespace 'com.example.otmshare'
     compileSdk 33
@@ -55,4 +56,16 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx:24.6.1'
     implementation 'com.google.firebase:firebase-storage-ktx:20.2.1'
     implementation 'com.google.android.libraries.places:places:3.2.0'
+
+    //--------------------NAVIGATION----------------
+    def nav_version = "2.6.0"
+    // Kotlin
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    // Feature module Support
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
+    // Testing Navigation
+    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+    // Jetpack Compose Integration
+    implementation "androidx.navigation:navigation-compose:$nav_version"
 }
