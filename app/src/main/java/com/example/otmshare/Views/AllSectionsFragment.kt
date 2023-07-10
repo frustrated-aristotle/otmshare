@@ -13,6 +13,7 @@ import com.example.otmshare.Adapters.SectionFragmentRecyclerRowAdapter
 import com.example.otmshare.R
 import com.example.otmshare.Sections.Section
 import com.example.otmshare.databinding.FragmentAllSectionsBinding
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 
@@ -23,9 +24,10 @@ class AllSectionsFragment : Fragment() {
     private var _binding: FragmentAllSectionsBinding ? = null
     private val binding get() = _binding!!
 
+
     //Firebase
     private val database = FirebaseFirestore.getInstance()
-
+    private lateinit var auth : FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,13 +45,11 @@ class AllSectionsFragment : Fragment() {
         val view = binding.root
         return view
     }
-
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var sections = mutableListOf<Section>()
+        auth = FirebaseAuth.getInstance()
 
+        var sections = mutableListOf<Section>()
         val collectionRef = database.collection("Section")
         collectionRef.get()
             .addOnSuccessListener { documents ->
@@ -58,7 +58,8 @@ class AllSectionsFragment : Fragment() {
                     val content = document.get("content") as String
                     val seasonAndEpisode = document.get("seasonAndEpisode") as String
                     val url = document.get("url") as String
-                    val section = Section(seasonAndEpisode,content,url,0,0)
+                    val docID = document.get("id") as Long
+                    val section = Section(seasonAndEpisode,content,url,0,0, id = docID)
                     sections.add(section)
                     recyclerViewAdapter.sectionList = sections
                     recyclerViewAdapter.notifyDataSetChanged()

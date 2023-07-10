@@ -19,10 +19,15 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.otmshare.R
 import com.example.otmshare.Sections.Section
 import com.example.otmshare.databinding.SectionFragmentRecyclerRowBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import kotlin.math.exp
 
 class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) : RecyclerView.Adapter<SectionFragmentRecyclerRowAdapter.SectionViewHolder>(){
 
-    var a : List<Int> = listOf(3,5,2,4,1)
+    val auth = FirebaseAuth.getInstance()
+    val database =FirebaseFirestore.getInstance()
     class SectionViewHolder(var view: SectionFragmentRecyclerRowBinding) : ViewHolder(view.root) {
     }
 
@@ -48,6 +53,15 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
         }
         val scaleDown = ObjectAnimator.ofPropertyValuesHolder(
             holder.view.cardView2,
+            PropertyValuesHolder.ofFloat(View.SCALE_X, 0.9f),
+            PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.9f)
+        ).apply {
+            duration = 100
+            repeatCount = 0
+            repeatMode = ObjectAnimator.REVERSE
+        }
+        val scaleDownLike = ObjectAnimator.ofPropertyValuesHolder(
+            holder.view.likeImage,
             PropertyValuesHolder.ofFloat(View.SCALE_X, 0.9f),
             PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.9f)
         ).apply {
@@ -81,7 +95,27 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
             }
             true
         }
+        holder.view.likeImage.setOnTouchListener { view, motionEvent -> when (motionEvent.action) {
+            MotionEvent.ACTION_DOWN -> {
+                // CardView dokunulduğunda animasyonu başlat
+                scaleDownLike.start()
+            }
+            MotionEvent.ACTION_CANCEL -> {
+                // CardView dokunuşu serbest bırakıldığında veya iptal edildiğinde animasyonu durdur
+                scaleDownLike.cancel()
+                holder.view.likeImage.scaleX = 1.0f
+                holder.view.likeImage.scaleY = 1.0f
+              //  holder.view.cardView2.setCardBackgroundColor(android.graphics.Color.WHITE)
+            }
+            MotionEvent.ACTION_UP ->{
+                scaleDownLike.cancel()
+                holder.view.likeImage.scaleX = 1.0f
+                holder.view.likeImage.scaleY = 1.0f
+            }
+        }
+            true }
         holder.view.likeImage.setOnClickListener{
+            likeImage(sectionList[position].id)
             println("Click on like")
         }
         holder.view.saveImage.setOnClickListener{
@@ -89,6 +123,42 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
         }
         //holder.view.listener = this!!
     }
+
+    private fun likeImage(id: Long) {
+        val currentUser = auth.currentUser
+        val currentUserID = currentUser!!.uid
+        val collectionRef = database.collection("User")
+        collectionRef.get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val documentId = document.id
+                    println("Doc ID : " + documentId +  " " +id)
+                    val favSections = document.get("favouriteSections") as String
+                    println("Fav sections: " + favSections)
+                    var updatedFavSections = ""
+                    val intId : Int = id.toInt()
+                    if(favSections.length > 0)
+                        updatedFavSections = favSections +"."+intId
+                    else
+                        updatedFavSections = favSections + intId
+                    val data = HashMap<String, Any>()
+                    data.put("favouriteSections", updatedFavSections)
+                        collectionRef.document(documentId)
+                            .update(data)
+                            .addOnSuccessListener {
+                                println("favouriteSections updated for document $documentId")
+                            }
+                            .addOnFailureListener { exception ->
+                                println("Failed to update favouriteSections for document $documentId: $exception")
+                            }
+                }
+            }
+            .addOnFailureListener { exception ->
+                println(exception)
+            }
+    }
+
+
     fun openSpotifyPodcast(url: String, view : View) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         intent.setPackage("com.spotify.music") // Spotify uygulamasını belirtmek için

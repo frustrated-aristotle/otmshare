@@ -42,6 +42,7 @@ class LoginFragment : Fragment() {
         val currentUser = auth.currentUser
         if(currentUser != null)
         {
+            println(currentUser.uid)
             goTo(view)
         }
         binding.buttonSignup.setOnClickListener {
