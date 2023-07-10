@@ -6,5 +6,6 @@ class Section (
     val url : String,
     val favAmount : Int = 0,
     val likeAmount : Int = 0,
+    val isActive : Boolean = true
     ){
 }
