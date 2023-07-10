@@ -52,7 +52,6 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
             openSpotifyPodcast(podcastUrl, it)
         }
         holder.view.likeImage.setOnClickListener{
-            likeImage(sectionList[position].id)
             println("Click on like")
         }
         holder.view.saveImage.setOnClickListener{
@@ -61,9 +60,34 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
         animateImages(listOf(holder.view.likeImage, holder.view.saveImage),sectionList[position].id)
 
         animateCardView(holder.view.cardView2, position)
-
+        println("run")
+        initButtons(holder.view.likeImage,holder.view.saveImage,sectionList[position].id)
 
         //holder.view.listener = this!!
+    }
+
+    private fun initButtons(likeView : ImageView, saveView : ImageView, viewID : Long) {
+        val userID = auth.currentUser!!.uid
+        val collectionRef = database.collection("User")
+        collectionRef.get()
+            .addOnSuccessListener { documents ->
+                for(document in documents)
+                {
+                   if (document.get("userID") == userID)
+                   {
+                       val likedSections = (document.get("likedSections")) as String
+                       for (i in 0..likedSections.length-1)
+                       {
+                           if (i%2 == 0 && likedSections.get(i).toString() == viewID.toString())
+                           {
+                               println("i is : ${i} and the char is ${likedSections.get(i)}")
+                               likeView.background = likeView.context.getDrawable(R.drawable.baseline_thumb_up_alt_24)
+                           }
+                       }
+                   }
+
+                }
+            }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -139,9 +163,12 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
                         imgView.scaleY = 1.0f
                         if (i == 0) //like Img
                             {view.background = view.context.getDrawable(R.drawable.baseline_thumb_up_alt_24)
-                            likeImage(id)}
+                            likeOrSaveImage(id, "likedSections")}
                         else
+                        {
                             view.background = view.context.getDrawable(R.drawable.baseline_turned_in_24)
+                            likeOrSaveImage(id, "savedSections")
+                        }
                     }
                 }
                 true
@@ -150,7 +177,7 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
     }
 
 
-    private fun likeImage(id: Long) {
+    private fun likeOrSaveImage(id: Long, str : String) {
         val currentUser = auth.currentUser
         val currentUserID = currentUser!!.uid
         val collectionRef = database.collection("User")
@@ -159,9 +186,7 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
                 for (document in documents) {
 
                     val documentId = document.id
-                    println("Doc ID : " + documentId +  " " +id)
-                    val favSections = document.get("favouriteSections") as String
-                    println("Fav sections: " + favSections)
+                    val favSections = document.get(str) as String
                     var updatedFavSections = ""
                     val intId : Int = id.toInt()
                     if(favSections.length > 0)
@@ -169,7 +194,7 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
                     else
                         updatedFavSections = favSections + intId
                     val data = HashMap<String, Any>()
-                    data.put("favouriteSections", updatedFavSections)
+                    data.put(str, updatedFavSections)
                         collectionRef.document(documentId)
                             .update(data)
                             .addOnSuccessListener {
