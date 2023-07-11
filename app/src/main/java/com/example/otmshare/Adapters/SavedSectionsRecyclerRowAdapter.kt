@@ -13,21 +13,34 @@ import com.example.otmshare.databinding.SectionFragmentRecyclerRowBinding
 class SavedSectionsRecyclerRowAdapter(var savedSection : MutableList<Section>) :
     RecyclerView.Adapter<SavedSectionsRecyclerRowAdapter.SectionViewHolder>() {
 
-    class SectionViewHolder(view : SectionFragmentRecyclerRowBinding) : ViewHolder(view.root)
+
+    class SectionViewHolder(var view : SectionFragmentRecyclerRowBinding) : ViewHolder(view.root)
     {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SectionViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = DataBindingUtil.inflate<SectionFragmentRecyclerRowBinding>(inflater, R.layout.fragment_saved_sections, parent, false)
+        val view = DataBindingUtil.inflate<SectionFragmentRecyclerRowBinding>(inflater, R.layout.section_fragment_recycler_row, parent, false)
         return SectionViewHolder(view)
     }
 
     override fun getItemCount(): Int {
-        return 5
+
         return savedSection.size
     }
 
     override fun onBindViewHolder(holder: SectionViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        //region Initializing CardView components
+        holder.view.titleText.text = makeItATitle(savedSection[position].seasonAndEpisode)
+        holder.view.contentText.text = savedSection[position].content
+        holder.view.urlText.text = savedSection[position].url
+        //endregion
+    }
+    fun makeItATitle(str : String) : String
+    {
+        val numberParts = str.split(".")
+
+        val title = "Sezon ${numberParts[0]} - Bölüm ${numberParts[1]}  |  ${numberParts[2]}"
+
+        return title
     }
 }

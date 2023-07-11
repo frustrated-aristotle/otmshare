@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/section_nav"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/savedSectionsFragment">
 
     <fragment
         android:id="@+id/allSectionsFragment"
@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_allSectionsFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_allSectionsFragment_to_savedSectionsFragment"
+            app:destination="@id/savedSectionsFragment" />
     </fragment>
     <fragment
         android:id="@+id/blankFragment"
@@ -39,4 +42,13 @@
         android:name="com.example.otmshare.Views.CreatingSections"
         android:label="fragment_creating_sections"
         tools:layout="@layout/fragment_creating_sections" />
+    <fragment
+        android:id="@+id/savedSectionsFragment"
+        android:name="com.example.otmshare.Views.SavedSectionsFragment"
+        android:label="fragment_saved_sections"
+        tools:layout="@layout/fragment_saved_sections" >
+        <action
+            android:id="@+id/action_savedSectionsFragment_to_allSectionsFragment"
+            app:destination="@id/allSectionsFragment" />
+    </fragment>
 </navigation>
