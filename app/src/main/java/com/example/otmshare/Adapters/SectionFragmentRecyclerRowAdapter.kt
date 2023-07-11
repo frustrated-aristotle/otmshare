@@ -25,8 +25,7 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
 
     val auth = FirebaseAuth.getInstance()
     val database =FirebaseFirestore.getInstance()
-    class SectionViewHolder(var view: SectionFragmentRecyclerRowBinding) : ViewHolder(view.root) {
-    }
+    class SectionViewHolder(var view: SectionFragmentRecyclerRowBinding) : ViewHolder(view.root) {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SectionViewHolder {
 
@@ -41,31 +40,34 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: SectionViewHolder, position: Int) {
-        //TODO:
 
+        //region Initializing CardView components
         holder.view.titleText.text = makeItATitle(sectionList[position].seasonAndEpisode)
         holder.view.contentText.text = sectionList[position].content
         holder.view.urlText.text = sectionList[position].url
+        //endregion
+
+        //region setOnClickListeners cardView2, likeImage, saveImage
         holder.view.cardView2.setOnClickListener {
             //val podcastUrl = "https://open.spotify.com/episode/0ZYEwsnHKhCRIJsXnK1RYY?si=877509381e2e41ab&t=460"
             val podcastUrl = sectionList[position].url
             openSpotifyPodcast(podcastUrl, it)
         }
+
         holder.view.likeImage.setOnClickListener{
             println("Click on like")
         }
         holder.view.saveImage.setOnClickListener{
             println("Click on save")
         }
+        //endregion
+
         animateImages(listOf(holder.view.likeImage, holder.view.saveImage),sectionList[position].id)
-
         animateCardView(holder.view.cardView2, position)
-        println("run")
         initButtons(holder.view.likeImage,holder.view.saveImage,sectionList[position].id)
-
-        //holder.view.listener = this!!
     }
 
+    //To set buttons background by getting if they are selected from cloud
     private fun initButtons(likeView : ImageView, saveView : ImageView, viewID : Long) {
         val userID = auth.currentUser!!.uid
         val collectionRef = database.collection("User")
@@ -76,13 +78,26 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
                    if (document.get("userID") == userID)
                    {
                        val likedSections = (document.get("likedSections")) as String
+                       var savedSections = document.get("savedSections") as String
                        for (i in 0..likedSections.length-1)
                        {
-                           if (i%2 == 0 && likedSections.get(i).toString() == viewID.toString())
+                           if (i%2 == 0)
                            {
-                               println("i is : ${i} and the char is ${likedSections.get(i)}")
-                               likeView.background = likeView.context.getDrawable(R.drawable.baseline_thumb_up_alt_24)
+                               if (likedSections.get(i).toString() == viewID.toString())
+                               {
+                                   likeView.background = likeView.context.getDrawable(R.drawable.baseline_thumb_up_alt_24)
+                                    //Change their selected boolean
+                                   sectionList[viewID.toInt()].isLikeClicked = true
+                               }
                            }
+                       }
+                       for(i in 0 .. savedSections.length-1)
+                       {
+                            if(savedSections.get(i).toString() == viewID.toString())
+                            {
+                                saveView.background = saveView.context.getDrawable(R.drawable.baseline_turned_in_24)
+                                sectionList[viewID.toInt()].isSaveClicked = true;
+                            }
                        }
                    }
 
@@ -90,6 +105,7 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
             }
     }
 
+    //region Animations
     @SuppressLint("ClickableViewAccessibility")
     private fun animateCardView(cardView : CardView, position: Int) {
         val c = android.graphics.Color.parseColor("#D3D2D2")
@@ -162,12 +178,34 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
                         imgView.scaleX = 1.0f
                         imgView.scaleY = 1.0f
                         if (i == 0) //like Img
-                            {view.background = view.context.getDrawable(R.drawable.baseline_thumb_up_alt_24)
-                            likeOrSaveImage(id, "likedSections")}
+                        {
+                                if(sectionList[id.toInt()].isLikeClicked == false)
+                                {
+                                    sectionList[id.toInt()].isLikeClicked = true
+                                    view.background = view.context.getDrawable(R.drawable.baseline_thumb_up_alt_24)
+                                    likeOrSaveImage(id, "likedSections")
+                                }
+                                else
+                                {
+                                    sectionList[id.toInt()].isLikeClicked = false
+                                    view.background = view.context.getDrawable(R.drawable.baseline_thumb_up_off_alt_x)
+                                    deleteLikedOrSavedImage(id, "likedSections")
+                                }
+                        }
                         else
                         {
-                            view.background = view.context.getDrawable(R.drawable.baseline_turned_in_24)
-                            likeOrSaveImage(id, "savedSections")
+                            if(sectionList[id.toInt()].isSaveClicked == false)
+                            {
+                                sectionList[id.toInt()].isSaveClicked = true
+                                view.background = view.context.getDrawable(R.drawable.baseline_turned_in_24)
+                                likeOrSaveImage(id, "savedSections")
+                            }
+                            else
+                            {
+                                sectionList[id.toInt()].isSaveClicked = false
+                                view.background = view.context.getDrawable(R.drawable.baseline_turned_in_not_24)
+                                deleteLikedOrSavedImage(id, "savedSections")
+                            }
                         }
                     }
                 }
@@ -176,6 +214,7 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
         }
     }
 
+    //endregion
 
     private fun likeOrSaveImage(id: Long, str : String) {
         val currentUser = auth.currentUser
@@ -184,17 +223,58 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
         collectionRef.get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
+                    if (document.get("userID") == currentUserID)
+                    {
+                        val documentId = document.id
+                        val favSections = document.get(str) as String
+                        var updatedFavSections = ""
+                        val intId : Int = id.toInt()
+                        if(!favSections.contains(intId.toString()))
+                        {
+                            if(favSections.length > 0)
+                            {
+                                updatedFavSections = favSections +"."+intId
+                            }
+                            else
+                            {
+                                updatedFavSections = favSections + intId
+                            }
 
-                    val documentId = document.id
-                    val favSections = document.get(str) as String
-                    var updatedFavSections = ""
-                    val intId : Int = id.toInt()
-                    if(favSections.length > 0)
-                        updatedFavSections = favSections +"."+intId
-                    else
-                        updatedFavSections = favSections + intId
-                    val data = HashMap<String, Any>()
-                    data.put(str, updatedFavSections)
+                            val data = HashMap<String, Any>()
+                            data.put(str, updatedFavSections)
+                            collectionRef.document(documentId)
+                                .update(data)
+                                .addOnSuccessListener {
+                                        println("favouriteSections updated for document $documentId")
+                                    }
+                                .addOnFailureListener { exception ->
+                                        println("Failed to update favouriteSections for document $documentId: $exception")
+                                    }
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                println(exception)
+            }
+    }
+
+    private fun deleteLikedOrSavedImage(id: Long, str : String)
+    {
+        val currentUser = auth.currentUser
+        val currentUserID = currentUser!!.uid
+        val collectionRef = database.collection("User")
+        collectionRef.get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    if (document.get("userID") == currentUserID)
+                    {
+                        val documentId = document.id
+                        val favSections = document.get(str) as String
+                        val intId : Int = id.toInt()
+                        var updatedFavSections = delete(favSections, id.toString())
+                        val data = HashMap<String, Any>()
+                        data.put(str, updatedFavSections)
                         collectionRef.document(documentId)
                             .update(data)
                             .addOnSuccessListener {
@@ -203,6 +283,7 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
                             .addOnFailureListener { exception ->
                                 println("Failed to update favouriteSections for document $documentId: $exception")
                             }
+                    }
                 }
             }
             .addOnFailureListener { exception ->
@@ -210,7 +291,31 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
             }
     }
 
+    fun delete(currentString : String, stringToRemove : String) : String
+    {
+        var updatedString = ""
+        for (i in 0..currentString.length)
+        {
+            if (currentString.contains(stringToRemove))
+            {
+                val length = stringToRemove.length
+                val startingIndex = currentString.indexOf(stringToRemove)
+                val endingIndex =  startingIndex + length
 
+                println("Starting index is ${startingIndex} EndingIndex is ${endingIndex} Length${length}")
+                if (currentString.length > startingIndex + length)
+                {
+                    updatedString= currentString.removeRange(startingIndex, endingIndex+1)
+                }
+                else
+                {
+                    updatedString= currentString.removeRange(startingIndex, endingIndex)
+                }
+                println("b: " + updatedString)
+            }
+        }
+        return updatedString
+    }
     fun openSpotifyPodcast(url: String, view : View) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         intent.setPackage("com.spotify.music") // Spotify uygulamasını belirtmek için

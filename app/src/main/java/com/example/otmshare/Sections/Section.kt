@@ -7,6 +7,8 @@ class Section (
     val favAmount : Int = 0,
     val likeAmount : Int = 0,
     val isActive : Boolean = true,
-    val id : Long = 0
+    val id : Long = 0,
+    var isLikeClicked : Boolean = false,
+    var isSaveClicked : Boolean = false
     ){
 }

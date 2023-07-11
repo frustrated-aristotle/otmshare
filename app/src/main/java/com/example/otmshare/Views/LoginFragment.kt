@@ -5,10 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.Navigation
+import com.example.otmshare.Util.makeToast
 import com.example.otmshare.databinding.FragmentLoginBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.auth.User
+import org.w3c.dom.Document
+import javax.xml.XMLConstants
 
 class LoginFragment : Fragment() {
 
@@ -25,7 +30,11 @@ class LoginFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
     }
+    var isLoginTrue : Boolean = false
 
+    init {
+        isLoginTrue = false
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,34 +51,62 @@ class LoginFragment : Fragment() {
         val currentUser = auth.currentUser
         if(currentUser != null)
         {
-            println(currentUser.uid)
-            goTo(view)
+            //We need to create new users in our user database.
+                goTo(view)
         }
         binding.buttonSignup.setOnClickListener {
             getInputs()
             if(email!= null && password!= null)
             {
-                createUser()
-                goTo(it)
+                createUser(it)
+                //Toast.makeText(context, "Signed UP", Toast.LENGTH_SHORT).show()
             }
         }
         binding.buttonLogin.setOnClickListener{
             getInputs()
             if(email!= null && password!= null)
             {
-                login()
-                goTo(it)
+                login(binding.buttonLogin)
+
             }
         }
     }
+    var currentUser : String = ""
+    val database = FirebaseFirestore.getInstance()
+    private fun addUserIDToCategory() {
 
-    private fun login() {
+        val collectionRef = database.collection("User")
+        val user = HashMap<String, String>()
+        user.put("userID" , auth.currentUser!!.uid )
+        user.put("savedSections", "")
+        user.put("likedSections", "")
+        user.put("email", auth.currentUser!!.email.toString())
+        user.put("password", binding.passwordText.text.toString())
+        collectionRef.add(user)
+            .addOnCompleteListener {task ->
+                if (task.isSuccessful)
+                {
+                    Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener{exception ->
+                Toast.makeText(context, exception.localizedMessage, Toast.LENGTH_SHORT).show()
+            }
+
+    }
+
+
+    private fun login(it : View){
 
         auth.signInWithEmailAndPassword(email,password).addOnCompleteListener { task ->
             if(task.isSuccessful)
             {
-                val currentUser = auth.currentUser?.email.toString()
+                currentUser = auth.currentUser?.email.toString()
+                goTo(it)
             }
+        }.addOnFailureListener { exception->
+            if (exception != null)
+                Toast.makeText(it.context, exception.localizedMessage, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -86,14 +123,21 @@ class LoginFragment : Fragment() {
     }
 
 
-    private fun createUser()
+    private fun createUser(it : View)
     {
         auth.createUserWithEmailAndPassword(email,password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful)
-                    println("Succesfull")}
+                {
+                    Toast.makeText(context, "Successfully Created", Toast.LENGTH_SHORT).show()
+                    addUserIDToCategory()
+                    goTo(it)
+                    makeToast(auth.currentUser!!.uid, it)
+                    println(auth.currentUser!!.uid)
+                }
+            }
             .addOnFailureListener{ exception ->
-                println("Exception heyy: " + exception)
+                    Toast.makeText(context, exception.localizedMessage,Toast.LENGTH_SHORT).show()
             }
     }
 }
