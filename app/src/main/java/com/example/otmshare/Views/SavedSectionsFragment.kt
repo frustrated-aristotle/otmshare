@@ -1,19 +1,22 @@
 package com.example.otmshare.Views
 
 import android.os.Bundle
+import android.view.GestureDetector
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.otmshare.Adapters.SavedSectionsRecyclerRowAdapter
 import com.example.otmshare.R
 import com.example.otmshare.Sections.Section
-import com.example.otmshare.databinding.FragmentAllSectionsBinding
 import com.example.otmshare.databinding.FragmentSavedSectionsBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-
+import java.lang.Math.abs
+private const val ARG_OBJECT = "object"
 class SavedSectionsFragment : Fragment() {
 
     private val adapter = SavedSectionsRecyclerRowAdapter(mutableListOf())
@@ -25,6 +28,7 @@ class SavedSectionsFragment : Fragment() {
     private val database = FirebaseFirestore.getInstance()
 
     val auth = FirebaseAuth.getInstance()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,6 +92,11 @@ class SavedSectionsFragment : Fragment() {
                 println("Error getting documents: " + exception)
             }
         binding.recyclerviewFragmentAllSections.adapter = adapter
+
+        //SWPIPE
+        arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
+            Toast.makeText(context, getInt(ARG_OBJECT).toString(), Toast.LENGTH_SHORT).show()
+        }
     }
     override fun onDestroyView() {
         super.onDestroyView()
