@@ -118,8 +118,8 @@ class LoginFragment : Fragment() {
 
     private fun goTo(view : View)
     {
-        val action = LoginFragmentDirections.actionLoginFragmentToAllSectionsFragment()
-        Navigation.findNavController(view).navigate(action)
+       val action = LoginFragmentDirections.actionLoginFragmentToAllSectionsFragment()
+       Navigation.findNavController(view).navigate(action)
     }
 
 

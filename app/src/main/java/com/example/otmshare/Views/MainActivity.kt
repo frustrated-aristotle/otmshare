@@ -23,21 +23,24 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
 
-        val tabLayout =findViewById<TabLayout>(R.id.tabLayout)
+        val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
         val viewPager = findViewById<ViewPager2>(R.id.viewPager)
 
         val adapter = ViewPagerAdapter(supportFragmentManager,lifecycle)
 
         viewPager.adapter = adapter
 
-        TabLayoutMediator(tabLayout,viewPager){tab, position ->
-            when(position)
-            {
-                0->{
-                    tab.text = "Main"
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            when (position) {
+                0 -> {
+                    tab.text = "Tüm Kesitler"
                 }
-                1->{
-                    tab.text = "Saved"
+                1 -> {
+                    tab.text = "Kaydedilenler"
+                }
+                else ->
+                {
+                    tab.text = "Kýpslar"
                 }
             }
         }.attach()
