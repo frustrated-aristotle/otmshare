@@ -1,18 +1,14 @@
-package com.example.otmshare.Views
+package com.example.otmshare.views
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.otmshare.Adapters.SectionFragmentRecyclerRowAdapter
-import com.example.otmshare.R
-import com.example.otmshare.Sections.Section
-import com.example.otmshare.Singleton.SectionSingleton
+import com.example.otmshare.adapters.SectionFragmentRecyclerRowAdapter
+import com.example.otmshare.sections.Section
+import com.example.otmshare.singleton.SectionSingleton
 import com.example.otmshare.databinding.FragmentAllSectionsBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -66,7 +62,7 @@ class AllSectionsFragment : Fragment() {
                     val docID = document.get("id") as Long
                     val section = Section(seasonAndEpisode, content, url, 0, 0, id = docID)
                     sections.add(section)
-                    recyclerViewAdapter.sectionList = sections
+                    recyclerViewAdapter.allSectionsList = sections
                     recyclerViewAdapter.notifyDataSetChanged()
                 }
             }.addOnFailureListener { exception ->
@@ -82,14 +78,14 @@ class AllSectionsFragment : Fragment() {
         val sec = mutableListOf<Section>()
         val sect = Section("2.3.DandikUlkem" , "Contetn of  mine" , "url", isLikeClicked = true)
         sec.add(sect)
-        recyclerViewAdapter.sectionList = sec
+        recyclerViewAdapter.allSectionsList = sec
         recyclerViewAdapter.notifyDataSetChanged()
         binding.recyclerviewFragmentAllSections.adapter = recyclerViewAdapter
 
     }
     fun test()
     {
-        println(recyclerViewAdapter.sectionList)
+        println(recyclerViewAdapter.allSectionsList)
     }
     override fun onDestroyView() {
         super.onDestroyView()

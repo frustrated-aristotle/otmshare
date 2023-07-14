@@ -1,14 +1,14 @@
-package com.example.otmshare.Adapters
+package com.example.otmshare.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.adapter.FragmentViewHolder
-import com.example.otmshare.Sections.Section
-import com.example.otmshare.Singleton.SectionSingleton
-import com.example.otmshare.Views.AllSectionsFragment
-import com.example.otmshare.Views.SavedSectionsFragment
+import com.example.otmshare.sections.Section
+import com.example.otmshare.singleton.SectionSingleton
+import com.example.otmshare.views.AllSectionsFragment
+import com.example.otmshare.views.SavedSectionsFragment
 
 class ViewPagerAdapter(fragmentManager : FragmentManager , lifecycle : Lifecycle):FragmentStateAdapter(fragmentManager, lifecycle) {
     override fun getItemCount(): Int {

@@ -1,31 +1,38 @@
-package com.example.otmshare.Adapters
+package com.example.otmshare.adapters
 
-import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat.startActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.otmshare.R
-import com.example.otmshare.Sections.Section
+import com.example.otmshare.sections.Section
 import com.example.otmshare.databinding.SectionFragmentRecyclerRowBinding
+import com.example.otmshare.util.animateCardView
+import com.example.otmshare.util.animateImages
+import com.example.otmshare.util.initButtons
+import com.example.otmshare.util.makeTitleFromEpisodeAndSeasonString
+import com.example.otmshare.util.openSpotifyWithPodcast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) : RecyclerView.Adapter<SectionFragmentRecyclerRowAdapter.SectionViewHolder>(){
+class SectionFragmentRecyclerRowAdapter(var allSectionsList : MutableList<Section>) : RecyclerView.Adapter<SectionFragmentRecyclerRowAdapter.SectionViewHolder>(){
 
     val auth = FirebaseAuth.getInstance()
     val database =FirebaseFirestore.getInstance()
 
+    //CardView Components' Global Versions
+    private lateinit var titleText : TextView
+    private lateinit var contentText : TextView
+    private lateinit var urlText : TextView
+    private lateinit var cardView: CardView
+    private lateinit var likeImage : ImageView
+    private lateinit var  saveImage: ImageView
+    //region Unused necessary ones
     class SectionViewHolder(var view: SectionFragmentRecyclerRowBinding) : ViewHolder(view.root) {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SectionViewHolder {
@@ -36,40 +43,61 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
     }
 
     override fun getItemCount(): Int {
-        return sectionList.size
+        return allSectionsList.size
     }
-
+    //endregion
+    fun assignCardViewComponents(holder : SectionViewHolder, position : Int)
+    {
+        holder.view.titleText.text = makeTitleFromEpisodeAndSeasonString(allSectionsList[position].seasonAndEpisode)
+        holder.view.contentText.text = allSectionsList[position].content
+        holder.view.urlText.text = allSectionsList[position].url
+        titleText = holder.view.titleText
+        contentText = holder.view.contentText
+        urlText = holder.view.urlText
+    }
+    fun initliazeSetOnClickListeners(holder : SectionViewHolder, position : Int)
+    {
+        cardView = holder.view.cardView2
+        likeImage = holder.view.likeImage
+        saveImage = holder.view.saveImage
+        cardView.setOnClickListener {
+            //val podcastUrl = "https://open.spotify.com/episode/0ZYEwsnHKhCRIJsXnK1RYY?si=877509381e2e41ab&t=460"
+            val podcastUrl = allSectionsList[position].url
+            openSpotifyWithPodcast(podcastUrl, it)
+        }
+        likeImage.setOnClickListener{
+            println("Click on like")
+        }
+        saveImage.setOnClickListener{
+            println("Click on save")
+        }
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: SectionViewHolder, position: Int) {
+        println("Holder:  " + holder.itemId)
+        assignCardViewComponents(holder, position)
+        initliazeSetOnClickListeners(holder, position)
 
-        //region Initializing CardView components
-        holder.view.titleText.text = makeItATitle(sectionList[position].seasonAndEpisode)
-        holder.view.contentText.text = sectionList[position].content
-        holder.view.urlText.text = sectionList[position].url
+        animateImages(listOf(likeImage, saveImage),allSectionsList[position].id,allSectionsList,auth,database,null,allSectionsList[position])
+        animateCardView(cardView,allSectionsList[position].id,allSectionsList,auth,database, position)
 
-        //endregion
+        initButtons(likeImage,saveImage, allSectionsList[position].id,auth,database, allSectionsList, allSectionsList[position] )
+        println("---------------------------------------------------------------------")
 
-        //region setOnClickListeners cardView2, likeImage, saveImage
-        holder.view.cardView2.setOnClickListener {
-            //val podcastUrl = "https://open.spotify.com/episode/0ZYEwsnHKhCRIJsXnK1RYY?si=877509381e2e41ab&t=460"
-            val podcastUrl = sectionList[position].url
-            openSpotifyPodcast(podcastUrl, it)
+    }
+
+    fun printSections()
+    {
+        for (sec in allSectionsList)
+        {
+            println("OUTSIDE current section is ${sec.id} and its is save clicked value is ${sec.isSaveClicked} ")
         }
-
-        holder.view.likeImage.setOnClickListener{
-            println("Click on like")
-        }
-        holder.view.saveImage.setOnClickListener{
-            println("Click on save")
-        }
-        //endregion
-
+    }
+/*
         animateImages(listOf(holder.view.likeImage, holder.view.saveImage),sectionList[position].id)
         animateCardView(holder.view.cardView2, position)
         initButtons(holder.view.likeImage,holder.view.saveImage,sectionList[position].id)
-    }
-
     //To set buttons background by getting if they are selected from cloud
     private fun initButtons(likeView : ImageView, saveView : ImageView, viewID : Long) {
         val userID = auth.currentUser!!.uid
@@ -140,7 +168,7 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
                     cardView.scaleX = 1.0f
                     cardView.scaleY = 1.0f
                     val podcastUrl = sectionList[position].url
-                    openSpotifyPodcast(podcastUrl, cardView)
+                    openSpotifyWithPodcast(podcastUrl, cardView)
                     cardView.setCardBackgroundColor(android.graphics.Color.WHITE)
                 }
             }
@@ -318,18 +346,5 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
             }
         }
         return updatedString
-    }
-    fun openSpotifyPodcast(url: String, view : View) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        intent.setPackage("com.spotify.music") // Spotify uygulamasını belirtmek için
-        startActivity(view.context,intent,null)
-    }
-    fun makeItATitle(str : String) : String
-    {
-        val numberParts = str.split(".")
-
-        val title = "Sezon ${numberParts[0]} - Bölüm ${numberParts[1]}  |  ${numberParts[2]}"
-
-        return title
-    }
+    }*/
 }

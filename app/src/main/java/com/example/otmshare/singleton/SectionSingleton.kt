@@ -1,8 +1,8 @@
-package com.example.otmshare.Singleton
+package com.example.otmshare.singleton
 
-import com.example.otmshare.Sections.Section
-import com.example.otmshare.Views.AllSectionsFragment
-import com.example.otmshare.Views.SavedSectionsFragment
+import com.example.otmshare.sections.Section
+import com.example.otmshare.views.AllSectionsFragment
+import com.example.otmshare.views.SavedSectionsFragment
 
 object SectionSingleton {
     var allSections = mutableListOf<Section>()

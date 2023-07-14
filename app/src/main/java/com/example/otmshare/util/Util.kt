@@ -1,4 +1,4 @@
-package com.example.otmshare.Util
+package com.example.otmshare.util
 /*
 private fun initData() {
         val collectionRef = database.collection("Markers")

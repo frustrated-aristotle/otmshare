@@ -1,4 +1,4 @@
-package com.example.otmshare.Sections
+package com.example.otmshare.sections
 
 class Section (
     val seasonAndEpisode : String,

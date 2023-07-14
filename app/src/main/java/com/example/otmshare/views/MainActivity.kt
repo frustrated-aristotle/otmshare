@@ -1,16 +1,12 @@
-package com.example.otmshare.Views
+package com.example.otmshare.views
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MotionEvent
-import android.widget.TableLayout
 import android.widget.Toast
-import androidx.core.view.MotionEventCompat
 import androidx.viewpager2.widget.ViewPager2
-import com.example.otmshare.Adapters.ViewPagerAdapter
+import com.example.otmshare.adapters.ViewPagerAdapter
 import com.example.otmshare.R
-import com.example.otmshare.Sections.Section
-import com.example.otmshare.Singleton.SectionSingleton
+import com.example.otmshare.singleton.SectionSingleton
 import com.example.otmshare.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -55,13 +51,14 @@ class MainActivity : AppCompatActivity() {
                 {
                     //SAÐSAÐSAÐ
                     println("All Sections fragment" + SectionSingleton.allSectionsFragment!!.id)
-                    SectionSingleton.allSectionsFragment!!.getFromList()
+                   // SectionSingleton.allSectionsFragment!!.getFromList()
 
                 }
                 else if (position < viewPager.adapter?.itemCount?.minus(1) ?: 0)
                 {
                     if(!firstStart)
-                        SectionSingleton.savedSectionsFragment!!.getFromList()
+                        //SectionSingleton.savedSectionsFragment!!.getFromList()
+                        println("s")
                     else
                         firstStart = false
                 }

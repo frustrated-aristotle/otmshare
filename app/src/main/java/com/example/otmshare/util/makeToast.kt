@@ -1,4 +1,4 @@
-package com.example.otmshare.Util
+package com.example.otmshare.util
 
 import android.view.View
 import android.widget.Toast

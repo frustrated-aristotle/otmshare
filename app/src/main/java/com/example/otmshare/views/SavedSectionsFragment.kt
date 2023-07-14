@@ -1,4 +1,4 @@
-package com.example.otmshare.Views
+package com.example.otmshare.views
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.otmshare.Adapters.SavedSectionsRecyclerRowAdapter
-import com.example.otmshare.Sections.Section
+import com.example.otmshare.adapters.SavedSectionsRecyclerRowAdapter
+import com.example.otmshare.sections.Section
 import com.example.otmshare.databinding.FragmentSavedSectionsBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -45,7 +45,7 @@ class SavedSectionsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.recyclerviewFragmentAllSections.layoutManager = LinearLayoutManager(context)
 
-        adapter.savedSection = sections
+        adapter.savedSectionsList = sections
         //Display just saved ones.
         val collectionRef =  database.collection("User")
         collectionRef.get()
@@ -73,7 +73,7 @@ class SavedSectionsFragment : Fragment() {
 
                                     val section = Section(seasonAndEpisode,content,url,0,0, id = docID)
                                     sections.add(section)
-                                    adapter.savedSection = sections
+                                    adapter.savedSectionsList = sections
                                     adapter.notifyDataSetChanged()
                                 }
 
@@ -95,7 +95,7 @@ class SavedSectionsFragment : Fragment() {
         val sec = mutableListOf<Section>()
         val sect = Section("2.3.DandikUlkem" , "Contetn of  mine" , "url")
         sec.add(sect)
-        adapter.savedSection = sec
+        adapter.savedSectionsList = sec
         adapter.notifyDataSetChanged()
         binding.recyclerviewFragmentAllSections.adapter = adapter
 

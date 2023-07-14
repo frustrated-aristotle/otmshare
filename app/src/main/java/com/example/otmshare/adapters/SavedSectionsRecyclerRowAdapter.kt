@@ -1,4 +1,4 @@
-package com.example.otmshare.Adapters
+package com.example.otmshare.adapters
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
@@ -10,7 +10,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
+import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -18,18 +18,32 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.GONE
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.otmshare.R
-import com.example.otmshare.Sections.Section
-import com.example.otmshare.Singleton.SectionSingleton
+import com.example.otmshare.sections.Section
 import com.example.otmshare.databinding.SectionFragmentRecyclerRowBinding
+import com.example.otmshare.util.makeTitleFromEpisodeAndSeasonString
+import com.example.otmshare.util.openSpotifyWithPodcast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.example.otmshare.util.animateCardView
+import com.example.otmshare.util.animateImages
+import com.example.otmshare.util.initButtons
+import com.example.otmshare.util.saveSection
 
-class SavedSectionsRecyclerRowAdapter(var savedSection : MutableList<Section>) :
+class SavedSectionsRecyclerRowAdapter(var savedSectionsList : MutableList<Section>) :
     RecyclerView.Adapter<SavedSectionsRecyclerRowAdapter.SectionViewHolder>() {
     val auth = FirebaseAuth.getInstance()
     val database = FirebaseFirestore.getInstance()
     var savedSections : String = ""
 
+    //CardView Components' Global Versions
+    private lateinit var titleText : TextView
+    private lateinit var contentText : TextView
+    private lateinit var urlText : TextView
+    private lateinit var cardView: CardView
+    private lateinit var likeImage : ImageView
+    private lateinit var  saveImage: ImageView
+
+    //region Unnecessary parts
     class SectionViewHolder(var view : SectionFragmentRecyclerRowBinding) : ViewHolder(view.root)
     {}
 
@@ -41,32 +55,44 @@ class SavedSectionsRecyclerRowAdapter(var savedSection : MutableList<Section>) :
 
     override fun getItemCount(): Int {
 
-        return savedSection.size
+        return savedSectionsList.size
     }
+    //endregion
 
-    override fun onBindViewHolder(holder: SectionViewHolder, position: Int) {
-        //region Initializing CardView components
-        holder.view.titleText.text = makeItATitle(savedSection[position].seasonAndEpisode)
-        holder.view.contentText.text = savedSection[position].content
-        holder.view.urlText.text = savedSection[position].url
-        //endregion
-        //region setOnClickListeners cardView2, likeImage, saveImage
-        holder.view.cardView2.setOnClickListener {
+    fun assignCardViewComponents(holder : SectionViewHolder, position : Int)
+    {
+        holder.view.titleText.text = makeTitleFromEpisodeAndSeasonString(savedSectionsList[position].seasonAndEpisode)
+        holder.view.contentText.text = savedSectionsList[position].content
+        holder.view.urlText.text = savedSectionsList[position].url
+        titleText = holder.view.titleText
+        contentText = holder.view.contentText
+        urlText = holder.view.urlText
+    }
+    fun initliazeSetOnClickListeners(holder : SectionViewHolder, position : Int)
+    {
+        cardView = holder.view.cardView2
+        likeImage = holder.view.likeImage
+        saveImage = holder.view.saveImage
+        cardView.setOnClickListener {
             //val podcastUrl = "https://open.spotify.com/episode/0ZYEwsnHKhCRIJsXnK1RYY?si=877509381e2e41ab&t=460"
-            val podcastUrl = savedSection[position].url
-            openSpotifyPodcast(podcastUrl, it)
+            val podcastUrl = savedSectionsList[position].url
+            openSpotifyWithPodcast(podcastUrl, it)
         }
-
-        holder.view.likeImage.setOnClickListener{
+        likeImage.setOnClickListener{
             println("Click on like")
         }
-        holder.view.saveImage.setOnClickListener{
+        saveImage.setOnClickListener{
             println("Click on save")
         }
-        //endregion
-        animateImages(listOf(holder.view.likeImage, holder.view.saveImage),savedSection[position].id,holder.view.cardView2)
-        animateCardView(holder.view.cardView2, position)
-        initButtons(holder.view.likeImage,holder.view.saveImage,savedSection[position].id)
+    }
+    override fun onBindViewHolder(holder: SectionViewHolder, position: Int) {
+
+        assignCardViewComponents(holder, position)
+        initliazeSetOnClickListeners(holder, position)
+
+        animateImages(listOf(likeImage, saveImage),savedSectionsList[position].id,savedSectionsList,auth,database, cardView,savedSectionsList[position])
+        animateCardView(cardView,savedSectionsList[position].id,savedSectionsList,auth,database, position)
+        initButtons(likeImage,saveImage, savedSectionsList[position].id,auth,database, savedSectionsList, savedSectionsList[position] )
     }
     @SuppressLint("ClickableViewAccessibility")
     private fun animateImages(imgViewList: List<ImageView>, id : Long, cardView: CardView)
@@ -105,15 +131,15 @@ class SavedSectionsRecyclerRowAdapter(var savedSection : MutableList<Section>) :
                         if (i == 0) //like Img
                         {
                             //if(savedSection[id.toInt()].isLikeClicked == false)
-                            if(savedSection[index].isLikeClicked == false)
+                            if(savedSectionsList[index].isLikeClicked == false)
                             {
-                                savedSection[index].isLikeClicked = true
+                                savedSectionsList[index].isLikeClicked = true
                                 view.background = view.context.getDrawable(R.drawable.baseline_thumb_up_alt_24)
                                 likeOrSaveImage(index.toLong()+1, "likedSections")
                             }
                             else
                             {
-                                savedSection[index].isLikeClicked = false
+                                savedSectionsList[index].isLikeClicked = false
                                 view.background = view.context.getDrawable(R.drawable.baseline_thumb_up_off_alt_x)
                                 deleteLikedOrSavedImage(id, "likedSections")
                             }
@@ -121,15 +147,15 @@ class SavedSectionsRecyclerRowAdapter(var savedSection : MutableList<Section>) :
                         else
                         {
 
-                            if(savedSection[index].isSaveClicked == false)
+                            if(savedSectionsList[index].isSaveClicked == false)
                             {
-                                savedSection[index].isSaveClicked = true
+                                savedSectionsList[index].isSaveClicked = true
                                 view.background = view.context.getDrawable(R.drawable.baseline_turned_in_24)
                                 likeOrSaveImage(index.toLong()+1, "savedSections")
                             }
                             else
                             {
-                                savedSection[index].isSaveClicked = false
+                                savedSectionsList[index].isSaveClicked = false
                                 view.background = view.context.getDrawable(R.drawable.baseline_turned_in_not_24)
                                 deleteLikedOrSavedImage(id, "savedSections")
                                 cardView.visibility = GONE
@@ -187,7 +213,7 @@ class SavedSectionsRecyclerRowAdapter(var savedSection : MutableList<Section>) :
     var tempSection = mutableListOf<Section>()
     private fun deleteLikedOrSavedImage(id: Long, str : String)
     {
-        tempSection = savedSection
+        tempSection = savedSectionsList
         val currentUser = auth.currentUser
         val currentUserID = currentUser!!.uid
         val collectionRef = database.collection("User")
@@ -207,9 +233,9 @@ class SavedSectionsRecyclerRowAdapter(var savedSection : MutableList<Section>) :
                         collectionRef.document(documentId)
                             .update(data)
                             .addOnSuccessListener {
-                                for (sec in savedSection)
+                                for (sec in savedSectionsList)
                                 {
-                                    println("Saved Section size" + savedSection.size)
+                                    println("Saved Section size" + savedSectionsList.size)
 
                                     if(sec.id == id)
                                     {
@@ -294,7 +320,7 @@ class SavedSectionsRecyclerRowAdapter(var savedSection : MutableList<Section>) :
                     scaleDown.cancel()
                     cardView.scaleX = 1.0f
                     cardView.scaleY = 1.0f
-                    val podcastUrl = savedSection[position].url
+                    val podcastUrl = savedSectionsList[position].url
                     openSpotifyPodcast(podcastUrl, cardView)
                     cardView.setCardBackgroundColor(android.graphics.Color.WHITE)
                 }
@@ -324,7 +350,7 @@ class SavedSectionsRecyclerRowAdapter(var savedSection : MutableList<Section>) :
                                     //Change their selected boolean
                                     val index = savedSections.indexOf(viewID.toString()) / 2
 
-                                    savedSection[index].isLikeClicked = true
+                                    savedSectionsList[index].isLikeClicked = true
                                 }
                             }
                         }
@@ -334,7 +360,7 @@ class SavedSectionsRecyclerRowAdapter(var savedSection : MutableList<Section>) :
                             {
                                 saveView.background = saveView.context.getDrawable(R.drawable.baseline_turned_in_24)
                                 val index = savedSections.indexOf(viewID.toString()) / 2
-                                savedSection[index].isSaveClicked = true;
+                                savedSectionsList[index].isSaveClicked = true;
                             }
                         }
                     }
