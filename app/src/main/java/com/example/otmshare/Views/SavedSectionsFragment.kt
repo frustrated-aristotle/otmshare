@@ -1,24 +1,19 @@
 package com.example.otmshare.Views
 
 import android.os.Bundle
-import android.view.GestureDetector
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.otmshare.Adapters.SavedSectionsRecyclerRowAdapter
-import com.example.otmshare.R
 import com.example.otmshare.Sections.Section
 import com.example.otmshare.databinding.FragmentSavedSectionsBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import java.lang.Math.abs
-private const val ARG_OBJECT = "object"
-class SavedSectionsFragment : Fragment() {
 
+class SavedSectionsFragment : Fragment() {
+    val sections = mutableListOf<Section>()
     private val adapter = SavedSectionsRecyclerRowAdapter(mutableListOf())
     //binding
     private var _binding : FragmentSavedSectionsBinding ? = null
@@ -43,14 +38,15 @@ class SavedSectionsFragment : Fragment() {
         val view = binding.root
         return view
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_saved_sections, container, false)
+        //return inflater.inflate(R.layout.fragment_saved_sections, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.recyclerviewFragmentAllSections.layoutManager = LinearLayoutManager(context)
-        val sections = mutableListOf<Section>()
-        adapter.savedSection =sections
+
+        adapter.savedSection = sections
+        //Display just saved ones.
         val collectionRef =  database.collection("User")
         collectionRef.get()
             .addOnSuccessListener { documents ->
@@ -59,14 +55,14 @@ class SavedSectionsFragment : Fragment() {
                     val userID = auth.currentUser!!.uid;
                     if(document.get("userID") == userID)
                     {
-                        val savedSections : String= document.get("savedSections") as String
+                        val savedSectionsString : String= document.get("savedSections") as String
                         val collectionRefForSection = database.collection("Section")
                         collectionRefForSection.get().addOnSuccessListener { documents ->
                             for (doc in documents)
                             {
 
                                 println(doc.id)
-                                if (savedSections.contains(doc.get("id").toString()))
+                                if (savedSectionsString.contains(doc.get("id").toString()))
                                 {
 
                                     val content = doc.get("content") as String
@@ -92,11 +88,17 @@ class SavedSectionsFragment : Fragment() {
                 println("Error getting documents: " + exception)
             }
         binding.recyclerviewFragmentAllSections.adapter = adapter
+    }
 
-        //SWPIPE
-        arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
-            Toast.makeText(context, getInt(ARG_OBJECT).toString(), Toast.LENGTH_SHORT).show()
-        }
+    fun getFromList()
+    {
+        val sec = mutableListOf<Section>()
+        val sect = Section("2.3.DandikUlkem" , "Contetn of  mine" , "url")
+        sec.add(sect)
+        adapter.savedSection = sec
+        adapter.notifyDataSetChanged()
+        binding.recyclerviewFragmentAllSections.adapter = adapter
+
     }
     override fun onDestroyView() {
         super.onDestroyView()

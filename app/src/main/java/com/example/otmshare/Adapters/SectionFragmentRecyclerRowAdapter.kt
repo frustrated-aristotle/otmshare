@@ -25,6 +25,7 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
 
     val auth = FirebaseAuth.getInstance()
     val database =FirebaseFirestore.getInstance()
+
     class SectionViewHolder(var view: SectionFragmentRecyclerRowBinding) : ViewHolder(view.root) {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SectionViewHolder {
@@ -38,6 +39,7 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
         return sectionList.size
     }
 
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: SectionViewHolder, position: Int) {
 
@@ -45,6 +47,7 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
         holder.view.titleText.text = makeItATitle(sectionList[position].seasonAndEpisode)
         holder.view.contentText.text = sectionList[position].content
         holder.view.urlText.text = sectionList[position].url
+
         //endregion
 
         //region setOnClickListeners cardView2, likeImage, saveImage
@@ -107,7 +110,7 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
 
     //region Animations
     @SuppressLint("ClickableViewAccessibility")
-    private fun animateCardView(cardView : CardView, position: Int) {
+    fun animateCardView(cardView : CardView, position: Int) {
         val c = android.graphics.Color.parseColor("#D3D2D2")
         val scaleDown = ObjectAnimator.ofPropertyValuesHolder(
             cardView,
@@ -146,7 +149,7 @@ class SectionFragmentRecyclerRowAdapter(var sectionList : MutableList<Section>) 
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun animateImages(imgViewList: List<ImageView>, id : Long)
+    fun animateImages(imgViewList: List<ImageView>, id : Long)
     {
         var imgView : ImageView
         for (i in 0..1)

@@ -9,6 +9,8 @@ import androidx.core.view.MotionEventCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.example.otmshare.Adapters.ViewPagerAdapter
 import com.example.otmshare.R
+import com.example.otmshare.Sections.Section
+import com.example.otmshare.Singleton.SectionSingleton
 import com.example.otmshare.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -16,6 +18,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    var firstStart : Boolean = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -44,7 +47,28 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }.attach()
+
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                // Saðdaki veya soldaki sayfaya geçildiðinde yapýlmasý gereken iþlemleri buraya yazabilirsiniz
+                if (position > 0)
+                {
+                    //SAÐSAÐSAÐ
+                    println("All Sections fragment" + SectionSingleton.allSectionsFragment!!.id)
+                    SectionSingleton.allSectionsFragment!!.getFromList()
+
+                }
+                else if (position < viewPager.adapter?.itemCount?.minus(1) ?: 0)
+                {
+                    if(!firstStart)
+                        SectionSingleton.savedSectionsFragment!!.getFromList()
+                    else
+                        firstStart = false
+                }
+            }
+        })
     }
+
 
     //This app is the otm app.
 }
