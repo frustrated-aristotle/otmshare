@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     var firstStart : Boolean = true
+    var firstStartRight : Boolean = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -47,18 +48,18 @@ class MainActivity : AppCompatActivity() {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 // Saðdaki veya soldaki sayfaya geçildiðinde yapýlmasý gereken iþlemleri buraya yazabilirsiniz
-                if (position > 0)
+                if (position > 0) //Right
                 {
-                    //SAÐSAÐSAÐ
-                    println("All Sections fragment" + SectionSingleton.allSectionsFragment!!.id)
-                   // SectionSingleton.allSectionsFragment!!.getFromList()
+                    if(!firstStartRight)
+                        SectionSingleton.savedSectionsFragment!!.getFromList()
+                    else
+                        firstStartRight = false
 
                 }
                 else if (position < viewPager.adapter?.itemCount?.minus(1) ?: 0)
                 {
                     if(!firstStart)
-                        //SectionSingleton.savedSectionsFragment!!.getFromList()
-                        println("s")
+                        SectionSingleton.allSectionsFragment!!.getFromList()
                     else
                         firstStart = false
                 }

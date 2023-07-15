@@ -70,18 +70,14 @@ class AllSectionsFragment : Fragment() {
             }
         binding.recyclerviewFragmentAllSections.layoutManager = LinearLayoutManager(context)
         binding.recyclerviewFragmentAllSections.adapter = recyclerViewAdapter
-        SectionSingleton.allSections = sections
     }
 
     fun getFromList()
     {
-        val sec = mutableListOf<Section>()
-        val sect = Section("2.3.DandikUlkem" , "Contetn of  mine" , "url", isLikeClicked = true)
-        sec.add(sect)
-        recyclerViewAdapter.allSectionsList = sec
+        SectionSingleton.updateAllSections()
+        recyclerViewAdapter.allSectionsList = SectionSingleton.allSectionsUpdated
         recyclerViewAdapter.notifyDataSetChanged()
         binding.recyclerviewFragmentAllSections.adapter = recyclerViewAdapter
-
     }
     fun test()
     {

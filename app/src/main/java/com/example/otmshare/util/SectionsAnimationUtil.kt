@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import com.example.otmshare.sections.Section
+import com.example.otmshare.singleton.SectionSingleton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -54,12 +55,11 @@ fun animateCardView(cardView : CardView, id : Long, sectionList : MutableList<Se
 fun animateImages(
     imgViewList: List<ImageView>,
     loopsSectionID: Long,
-    sectionList: MutableList<Section>,
     auth: FirebaseAuth,
     db: FirebaseFirestore,
-    //isSavedSectionsFragment : Boolean,
     cardView: CardView ?,
-    section : Section
+    section : Section,
+    position: Int
 )
 {
     var imgView : ImageView
@@ -93,11 +93,12 @@ fun animateImages(
                     imgView.scaleY = 1.0f
                     if (i == 0)//Like Image
                     {
-                        likeSection(sectionList, loopsSectionID, view, auth, db, section)
+                        likeSection(loopsSectionID, view, auth, db, section)
                     }
                     else//Save Image
                     {
-                        saveSection(sectionList, loopsSectionID, view, auth, db, cardView,section)
+                        saveSection(loopsSectionID, view, auth, db, cardView,section)
+                        SectionSingleton.updateSavedSections(loopsSectionID)
                     }
                 }
             }

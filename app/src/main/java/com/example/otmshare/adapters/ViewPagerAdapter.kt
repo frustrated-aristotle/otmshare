@@ -14,22 +14,16 @@ class ViewPagerAdapter(fragmentManager : FragmentManager , lifecycle : Lifecycle
     override fun getItemCount(): Int {
         return 2
     }
-    var allsectionsFragment : AllSectionsFragment ? = null
-    var savedSectFrag : SavedSectionsFragment ? = null
-
-    var allSections = mutableListOf<Section>()
     override fun createFragment(position: Int): Fragment {
         return when(position)
         {
             0->{
                 val frag= AllSectionsFragment()
-                allsectionsFragment = frag
                 SectionSingleton.allSectionsFragment = frag
                 frag
             }
             1->{
                 val frag = SavedSectionsFragment()
-                savedSectFrag = frag
                 SectionSingleton.savedSectionsFragment = frag
                 frag
             }
@@ -37,15 +31,5 @@ class ViewPagerAdapter(fragmentManager : FragmentManager , lifecycle : Lifecycle
                 return Fragment()
             }
         }
-    }
-
-    //!!
-    override fun onViewDetachedFromWindow(holder: FragmentViewHolder) {
-        super.onViewDetachedFromWindow(holder)
-       // allSections = allsectionsFragment!!.recyclerViewAdapter.sectionList
-        println("allsections ${allsectionsFragment!!.id} saved ${savedSectFrag!!.id}")
-        //allsectionsFragment!!.getFromList()
-        allsectionsFragment!!.test()
-        //allsectionsFragment!!.getFromCloud()
     }
 }

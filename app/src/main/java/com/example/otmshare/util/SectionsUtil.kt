@@ -5,6 +5,7 @@ import android.view.View
 import androidx.cardview.widget.CardView
 import com.example.otmshare.R
 import com.example.otmshare.sections.Section
+import com.example.otmshare.singleton.SectionSingleton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -12,7 +13,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 
 fun saveSection(
-    sectionList: MutableList<Section>,
     id: Long,
     view: View,
     auth: FirebaseAuth,
@@ -25,6 +25,7 @@ fun saveSection(
         currentSection.isSaveClicked = true
         view.background = view.context.getDrawable(R.drawable.baseline_turned_in_24)
         likeOrSaveImage(id, "savedSections", auth, db)
+
     }
     else
     {
@@ -35,38 +36,10 @@ fun saveSection(
             it?.visibility = View.GONE
         }
     }
-    //extracted(sectionList, view, id, auth, db, cardView)
-    for (s in sectionList)
-        println("AFTER DUDEEEEE ${s.id} : ${s.isSaveClicked}")
-
 }
 
-private fun extracted(
-    sectionList: MutableList<Section>,
-    view: View,
-    id: Long,
-    auth: FirebaseAuth,
-    db: FirebaseFirestore,
-    cardView: CardView?
-) {
-    for (section in sectionList) {
-        if (section.isSaveClicked == false) {
-            section.isSaveClicked = true
-            view.background = view.context.getDrawable(R.drawable.baseline_turned_in_24)
-            likeOrSaveImage(id, "savedSections", auth, db)
-        } else {
-            section.isSaveClicked = false
-            view.background = view.context.getDrawable(R.drawable.baseline_turned_in_not_24)
-            deleteLikedOrSavedImage(id, "savedSections", auth, db)
-            cardView.let {
-                it?.visibility = View.GONE
-            }
-        }
-    }
-}
 
 fun likeSection(
-    sectionList: MutableList<Section>,
     loopsSectionID: Long,
     view: View,
     auth: FirebaseAuth,
@@ -74,11 +47,13 @@ fun likeSection(
     section : Section
 )
 {
+
     if (section.isLikeClicked == false) {
         section.isLikeClicked = true
 
         view.background = view.context.getDrawable(R.drawable.baseline_thumb_up_alt_24)
         likeOrSaveImage(loopsSectionID, "likedSections", auth, db)
+        SectionSingleton.addToList(loopsSectionID, SectionSingleton.WantedStringType.SAVED)
     }
     else
     {
@@ -112,7 +87,6 @@ fun likeOrSaveImage(loopsSectionID: Long, wantedString : String, auth : Firebase
                         {
                             updatedSections = initSections + retypedLoopsSectionID
                         }
-
                         val data = HashMap<String, Any>()
                         data.put(wantedString, updatedSections)
                         collectionRef.document(documentId)
@@ -194,25 +168,4 @@ fun delete(initSections : String, stringToRemove : String) : String
         }
     }
     return updatedString
-    /*for (i in 0..initSectionsList.size)
-    {
-        if (initSections.contains(stringToRemove))
-        {
-            val length = stringToRemove.length
-            val startingIndex = initSections.indexOf(stringToRemove)
-            val endingIndex =  startingIndex + length
-
-            println("Starting index is ${startingIndex} EndingIndex is ${endingIndex} Length${length}")
-            if (initSections.length > startingIndex + length)
-            {
-                updatedString= initSections.removeRange(startingIndex, endingIndex+1)
-            }
-            else
-            {
-                updatedString= initSections.removeRange(startingIndex, endingIndex)
-            }
-            println("b: " + updatedString)
-        }
-    }
-    return updatedString*/
 }

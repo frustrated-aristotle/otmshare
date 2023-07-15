@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.otmshare.adapters.SavedSectionsRecyclerRowAdapter
 import com.example.otmshare.sections.Section
 import com.example.otmshare.databinding.FragmentSavedSectionsBinding
+import com.example.otmshare.singleton.SectionSingleton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -56,6 +57,7 @@ class SavedSectionsFragment : Fragment() {
                     if(document.get("userID") == userID)
                     {
                         val savedSectionsString : String= document.get("savedSections") as String
+                        SectionSingleton.initSavedSections(savedSectionsString)
                         val collectionRefForSection = database.collection("Section")
                         collectionRefForSection.get().addOnSuccessListener { documents ->
                             for (doc in documents)
@@ -64,25 +66,18 @@ class SavedSectionsFragment : Fragment() {
                                 println(doc.id)
                                 if (savedSectionsString.contains(doc.get("id").toString()))
                                 {
-
                                     val content = doc.get("content") as String
                                     val seasonAndEpisode = doc.get("seasonAndEpisode") as String
                                     val url = doc.get("url") as String
                                     val docID = doc.get("id") as Long
-
-
                                     val section = Section(seasonAndEpisode,content,url,0,0, id = docID)
                                     sections.add(section)
                                     adapter.savedSectionsList = sections
                                     adapter.notifyDataSetChanged()
                                 }
-
                             }
                         }
-
-
                     }
-
                 }
             }.addOnFailureListener { exception ->
                 println("Error getting documents: " + exception)
@@ -92,13 +87,11 @@ class SavedSectionsFragment : Fragment() {
 
     fun getFromList()
     {
-        val sec = mutableListOf<Section>()
-        val sect = Section("2.3.DandikUlkem" , "Contetn of  mine" , "url")
-        sec.add(sect)
-        adapter.savedSectionsList = sec
+        SectionSingleton.listX.clear()
+        SectionSingleton.updateX()
+        adapter.savedSectionsList = SectionSingleton.listX
         adapter.notifyDataSetChanged()
         binding.recyclerviewFragmentAllSections.adapter = adapter
-
     }
     override fun onDestroyView() {
         super.onDestroyView()
