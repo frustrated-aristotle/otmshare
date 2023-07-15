@@ -83,22 +83,6 @@ class SavedSectionsRecyclerRowAdapter(var savedSectionsList : MutableList<Sectio
 
         animateImages(listOf(likeImage, saveImage),savedSectionsList[position].id,auth,database, cardView,savedSectionsList[position],position)
         animateCardView(cardView,savedSectionsList[position].id,savedSectionsList,auth,database, position)
-        initButtons(likeImage,saveImage, savedSectionsList[position].id,auth,database, savedSectionsList, savedSectionsList[position],position )
-
-        //Section Related
-        if (SectionSingleton.isSavedSectionUpdated)
-        {
-            SectionSingleton.savedSectionsUpdated.clear()
-            SectionSingleton.isSavedSectionUpdated = false
-        }
-        if (!SectionSingleton.isSavedSectionUpdated  && savedSectionsList.size != SectionSingleton.savedSectionsUpdated.size+1 && savedSectionsList.size > 0)
-        {
-            SectionSingleton.savedSectionsUpdated.add(savedSectionsList[position])
-        }
-        else if (savedSectionsList.size == SectionSingleton.savedSectionsUpdated.size+1)
-        {
-            SectionSingleton.savedSectionsUpdated.add(savedSectionsList[position])
-            SectionSingleton.isSavedSectionUpdated = true
-        }
+        initButtons(likeImage,saveImage, savedSectionsList[position].id,auth,database,  savedSectionsList[position],false)
     }
 }

@@ -18,9 +18,8 @@ fun initButtons(
     loopsSectionID: Long,
     auth: FirebaseAuth,
     database: FirebaseFirestore,
-    sectionsList: MutableList<Section>,
     currentSection: Section,
-    position : Int
+    isAllSections : Boolean
 ) {
     val currentUserID = auth.currentUser!!.uid
     val userCollection = database.collection("User")
@@ -37,6 +36,15 @@ fun initButtons(
                     {
                         saveView.background = saveView.context.getDrawable(R.drawable.baseline_turned_in_24)
                         currentSection.isSaveClicked = true
+                        if(likedSectionsIDs.contains(loopsSectionID.toString()))
+                        {
+                            likeView.background = saveView.context.getDrawable(R.drawable.baseline_thumb_up_alt_24)
+                            currentSection.isLikeClicked = true
+                        }
+                    }
+                    else if (likedSectionsIDs.contains(loopsSectionID.toString()) && isAllSections == true){
+                        likeView.background = saveView.context.getDrawable(R.drawable.baseline_thumb_up_alt_24)
+                        currentSection.isLikeClicked = true
                     }
                     else
                         println("Curretn sectipons value  : " + currentSection.isSaveClicked)

@@ -25,7 +25,6 @@ fun saveSection(
         currentSection.isSaveClicked = true
         view.background = view.context.getDrawable(R.drawable.baseline_turned_in_24)
         likeOrSaveImage(id, "savedSections", auth, db)
-
     }
     else
     {
@@ -50,10 +49,9 @@ fun likeSection(
 
     if (section.isLikeClicked == false) {
         section.isLikeClicked = true
-
         view.background = view.context.getDrawable(R.drawable.baseline_thumb_up_alt_24)
         likeOrSaveImage(loopsSectionID, "likedSections", auth, db)
-        SectionSingleton.addToList(loopsSectionID, SectionSingleton.WantedStringType.SAVED)
+        //SectionSingleton.addToList(loopsSectionID, SectionSingleton.WantedStringType.SAVED)
     }
     else
     {

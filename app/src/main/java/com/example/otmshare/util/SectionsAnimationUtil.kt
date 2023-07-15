@@ -98,7 +98,6 @@ fun animateImages(
                     else//Save Image
                     {
                         saveSection(loopsSectionID, view, auth, db, cardView,section)
-                        SectionSingleton.updateSavedSections(loopsSectionID)
                     }
                 }
             }

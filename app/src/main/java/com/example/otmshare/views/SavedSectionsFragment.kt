@@ -87,9 +87,9 @@ class SavedSectionsFragment : Fragment() {
 
     fun getFromList()
     {
-        SectionSingleton.listX.clear()
-        SectionSingleton.updateX()
-        adapter.savedSectionsList = SectionSingleton.listX
+        SectionSingleton.savedSectionsListSingleton.clear()
+        SectionSingleton.updateSavedSections()
+        adapter.savedSectionsList = SectionSingleton.savedSectionsListSingleton
         adapter.notifyDataSetChanged()
         binding.recyclerviewFragmentAllSections.adapter = adapter
     }

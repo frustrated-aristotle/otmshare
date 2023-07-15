@@ -82,7 +82,7 @@ class SectionFragmentRecyclerRowAdapter(var allSectionsList : MutableList<Sectio
         animateImages(listOf(likeImage, saveImage),allSectionsList[position].id,auth,database,null,allSectionsList[position] ,position)
         animateCardView(cardView,allSectionsList[position].id,allSectionsList,auth,database, position)
 
-        initButtons(likeImage,saveImage, allSectionsList[position].id,auth,database, allSectionsList, allSectionsList[position], position )
+        initButtons(likeImage,saveImage, allSectionsList[position].id,auth,database, allSectionsList[position],true )
         println("i")
     }
 }
