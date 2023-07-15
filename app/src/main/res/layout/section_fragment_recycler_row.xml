@@ -17,7 +17,6 @@
             android:id="@+id/cardView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="150dp"
             android:layout_margin="10dp"
             android:layout_marginStart="9dp"
             android:layout_marginTop="16dp"
@@ -26,15 +25,14 @@
             map:layout_constraintEnd_toEndOf="parent"
             map:layout_constraintStart_toStartOf="parent"
             map:layout_constraintTop_toTopOf="parent"
-            tools:context=".MainActivity"
-
-            >
+            tools:context=".MainActivity">
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
             <TextView
                     android:id="@+id/titleText"
@@ -62,13 +60,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="25dp"
-                android:layout_weight="3"
-                android:text="Nalburların şehir içinde dükkan açmalarının yasak olması"
+                android:layout_weight="5"
+                android:text="lması"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textFontWeight="900"
                 android:textColor="@color/black"
-                /> <TextView
+                />
+            <TextView
                 android:id="@+id/urlText"
                 android:visibility="gone"
                 android:layout_width="wrap_content"
@@ -80,28 +79,49 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:gravity="end">
+                android:gravity="end"
+                android:layout_weight="1"
+                >
 
 
                 <ImageView
                     android:id="@+id/likeImage"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
                     android:src="@drawable/baseline_thumb_up_off_alt_x">
 
                 </ImageView>
 
+                <TextView
+                    android:id="@+id/likeCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="1dp"
+                    android:gravity="center"
+                    android:text="332">
+                </TextView>
+
                 <ImageView
                     android:id="@+id/saveImage"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
 
                     android:src="@drawable/baseline_turned_in_not_24">
                 </ImageView>
+                <TextView
+                    android:id="@+id/saveCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="1dp"
+                    android:gravity="center"
+                    android:text="332">
+                </TextView>
             </LinearLayout>
         </LinearLayout>
 

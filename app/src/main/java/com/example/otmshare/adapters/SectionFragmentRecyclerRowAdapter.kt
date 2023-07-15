@@ -20,6 +20,7 @@ import com.example.otmshare.util.makeTitleFromEpisodeAndSeasonString
 import com.example.otmshare.util.openSpotifyWithPodcast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import org.w3c.dom.Text
 
 class SectionFragmentRecyclerRowAdapter(var allSectionsList : MutableList<Section>) : RecyclerView.Adapter<SectionFragmentRecyclerRowAdapter.SectionViewHolder>(){
 
@@ -33,6 +34,7 @@ class SectionFragmentRecyclerRowAdapter(var allSectionsList : MutableList<Sectio
     private lateinit var cardView: CardView
     private lateinit var likeImage : ImageView
     private lateinit var  saveImage: ImageView
+    private lateinit var saveCounter : TextView
     //region Unused necessary ones
     class SectionViewHolder(var view: SectionFragmentRecyclerRowBinding) : ViewHolder(view.root) {}
 
@@ -55,6 +57,7 @@ class SectionFragmentRecyclerRowAdapter(var allSectionsList : MutableList<Sectio
         titleText = holder.view.titleText
         contentText = holder.view.contentText
         urlText = holder.view.urlText
+        saveCounter = holder.view.saveCounter
     }
     fun initliazeSetOnClickListeners(holder : SectionViewHolder, position : Int)
     {
@@ -79,7 +82,7 @@ class SectionFragmentRecyclerRowAdapter(var allSectionsList : MutableList<Sectio
         assignCardViewComponents(holder, position)
         initliazeSetOnClickListeners(holder, position)
 
-        animateImages(listOf(likeImage, saveImage),allSectionsList[position].id,auth,database,null,allSectionsList[position] ,position)
+        animateImages(listOf(likeImage, saveImage),allSectionsList[position].id,auth,database,null,allSectionsList[position] ,position, saveCounter)
         animateCardView(cardView,allSectionsList[position].id,allSectionsList,auth,database, position)
 
         initButtons(likeImage,saveImage, allSectionsList[position].id,auth,database, allSectionsList[position],true )

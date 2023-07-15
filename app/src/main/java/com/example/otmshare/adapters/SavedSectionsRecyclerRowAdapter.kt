@@ -32,7 +32,9 @@ class SavedSectionsRecyclerRowAdapter(var savedSectionsList : MutableList<Sectio
     private lateinit var urlText : TextView
     private lateinit var cardView: CardView
     private lateinit var likeImage : ImageView
-    private lateinit var  saveImage: ImageView
+    private lateinit var saveImage: ImageView
+    private lateinit var likeCounter : TextView
+    private lateinit var saveCounter : TextView
 
     //region Unnecessary parts
     class SectionViewHolder(var view : SectionFragmentRecyclerRowBinding) : ViewHolder(view.root)
@@ -64,6 +66,9 @@ class SavedSectionsRecyclerRowAdapter(var savedSectionsList : MutableList<Sectio
         cardView = holder.view.cardView2
         likeImage = holder.view.likeImage
         saveImage = holder.view.saveImage
+        likeCounter = holder.view.likeCounter
+        saveCounter = holder.view.saveCounter
+
         cardView.setOnClickListener {
             //val podcastUrl = "https://open.spotify.com/episode/0ZYEwsnHKhCRIJsXnK1RYY?si=877509381e2e41ab&t=460"
             val podcastUrl = savedSectionsList[position].url
@@ -81,7 +86,7 @@ class SavedSectionsRecyclerRowAdapter(var savedSectionsList : MutableList<Sectio
         assignCardViewComponents(holder, position)
         initliazeSetOnClickListeners(holder, position)
 
-        animateImages(listOf(likeImage, saveImage),savedSectionsList[position].id,auth,database, cardView,savedSectionsList[position],position)
+        animateImages(listOf(likeImage, saveImage),savedSectionsList[position].id,auth,database, cardView,savedSectionsList[position],position,saveCounter)
         animateCardView(cardView,savedSectionsList[position].id,savedSectionsList,auth,database, position)
         initButtons(likeImage,saveImage, savedSectionsList[position].id,auth,database,  savedSectionsList[position],false)
     }

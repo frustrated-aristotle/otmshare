@@ -1,15 +1,12 @@
 package com.example.otmshare.util
 
-import android.opengl.Visibility
 import android.view.View
+import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.example.otmshare.R
 import com.example.otmshare.sections.Section
-import com.example.otmshare.singleton.SectionSingleton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-
-
 
 
 fun saveSection(
@@ -18,19 +15,22 @@ fun saveSection(
     auth: FirebaseAuth,
     db: FirebaseFirestore,
     cardView: CardView ?,
-    currentSection: Section
+    currentSection: Section,
+    saveCounter : TextView
 ) {
     if (currentSection.isSaveClicked == false)
     {
         currentSection.isSaveClicked = true
         view.background = view.context.getDrawable(R.drawable.baseline_turned_in_24)
         likeOrSaveImage(id, "savedSections", auth, db)
+        modifyAmount(id.toInt(), db, 1, "saveCount",saveCounter)
     }
     else
     {
         currentSection.isSaveClicked = false
         view.background = view.context.getDrawable(R.drawable.baseline_turned_in_not_24)
         deleteLikedOrSavedImage(id, "savedSections", auth, db)
+        modifyAmount(id.toInt(), db, -1, "saveCount",saveCounter)
         cardView.let {
             it?.visibility = View.GONE
         }
@@ -166,4 +166,34 @@ fun delete(initSections : String, stringToRemove : String) : String
         }
     }
     return updatedString
+}
+
+
+fun modifyAmount(sectionID: Int, database: FirebaseFirestore, addition : Int, modifyString : String, saveCounter: TextView)
+{
+    val sectionCollectionRef = database.collection("Section")
+    sectionCollectionRef.get()
+        .addOnSuccessListener { sections ->
+            for (section in sections)
+            {
+                val docID = (section.get("id") as Long).toInt()
+                if(docID == sectionID)
+                {
+                    val currentAmount = (section.get(modifyString) as Long).toInt()
+                    val newAmount = currentAmount + addition
+                    saveCounter.text = newAmount.toString()
+                    val data = HashMap<String, Any>()
+                    data.put(modifyString, newAmount)
+
+                    sectionCollectionRef.document(section.id)
+                        .update(data)
+                        .addOnSuccessListener {
+                            println("favouriteSections updated for document ${section.id}")
+                        }
+                        .addOnFailureListener { exception ->
+                            println("Failed to update favouriteSections for document : $exception")
+                        }
+                }
+            }
+        }
 }

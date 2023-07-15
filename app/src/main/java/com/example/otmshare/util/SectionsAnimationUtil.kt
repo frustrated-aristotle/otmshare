@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.example.otmshare.sections.Section
 import com.example.otmshare.singleton.SectionSingleton
@@ -59,7 +60,8 @@ fun animateImages(
     db: FirebaseFirestore,
     cardView: CardView ?,
     section : Section,
-    position: Int
+    position: Int,
+    saveCounter : TextView
 )
 {
     var imgView : ImageView
@@ -97,7 +99,7 @@ fun animateImages(
                     }
                     else//Save Image
                     {
-                        saveSection(loopsSectionID, view, auth, db, cardView,section)
+                        saveSection(loopsSectionID, view, auth, db, cardView,section, saveCounter)
                     }
                 }
             }
