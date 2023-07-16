@@ -1,7 +1,9 @@
 package com.example.otmshare.singleton
 
+import android.view.View
 import com.example.otmshare.sections.Section
 import com.example.otmshare.views.AllSectionsFragment
+import com.example.otmshare.views.MainActivity
 import com.example.otmshare.views.SavedSectionsFragment
 
 object SectionSingleton {
@@ -16,6 +18,7 @@ object SectionSingleton {
     var allSectionsFragment : AllSectionsFragment ? = null
     var savedSectionsFragment:  SavedSectionsFragment ? = null
 
+    var mainActivity : MainActivity ? = null
     fun updateAllSections()
     {
         val newList = allSectionsFragment!!.recyclerViewAdapter.allSectionsList
@@ -39,5 +42,9 @@ object SectionSingleton {
                 savedSectionsListSingleton.add(section)
             }
         }
+    }
+
+    fun makeSwipersActive() {
+        mainActivity!!.swipers()
     }
 }

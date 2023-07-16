@@ -7,6 +7,7 @@ import com.example.otmshare.R
 import com.example.otmshare.sections.Section
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import org.w3c.dom.Text
 
 
 fun saveSection(
@@ -43,7 +44,8 @@ fun likeSection(
     view: View,
     auth: FirebaseAuth,
     db: FirebaseFirestore,
-    section : Section
+    section : Section,
+    counter : TextView
 )
 {
 
@@ -51,6 +53,7 @@ fun likeSection(
         section.isLikeClicked = true
         view.background = view.context.getDrawable(R.drawable.baseline_thumb_up_alt_24)
         likeOrSaveImage(loopsSectionID, "likedSections", auth, db)
+        modifyAmount(loopsSectionID.toInt(), db, 1, "likeCount",counter)
         //SectionSingleton.addToList(loopsSectionID, SectionSingleton.WantedStringType.SAVED)
     }
     else
@@ -58,6 +61,8 @@ fun likeSection(
         section.isLikeClicked = false
         view.background = view.context.getDrawable(R.drawable.baseline_thumb_up_off_alt_x)
         deleteLikedOrSavedImage(loopsSectionID, "likedSections", auth, db)
+        modifyAmount(loopsSectionID.toInt(), db, -1, "likeCount",counter)
+
     }
 }
 

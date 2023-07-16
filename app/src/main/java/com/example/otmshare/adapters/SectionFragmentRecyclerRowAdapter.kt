@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.otmshare.R
 import com.example.otmshare.sections.Section
 import com.example.otmshare.databinding.SectionFragmentRecyclerRowBinding
-import com.example.otmshare.singleton.SectionSingleton
 import com.example.otmshare.util.animateCardView
 import com.example.otmshare.util.animateImages
 import com.example.otmshare.util.initButtons
@@ -20,7 +19,6 @@ import com.example.otmshare.util.makeTitleFromEpisodeAndSeasonString
 import com.example.otmshare.util.openSpotifyWithPodcast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import org.w3c.dom.Text
 
 class SectionFragmentRecyclerRowAdapter(var allSectionsList : MutableList<Section>) : RecyclerView.Adapter<SectionFragmentRecyclerRowAdapter.SectionViewHolder>(){
 
@@ -33,8 +31,9 @@ class SectionFragmentRecyclerRowAdapter(var allSectionsList : MutableList<Sectio
     private lateinit var urlText : TextView
     private lateinit var cardView: CardView
     private lateinit var likeImage : ImageView
-    private lateinit var  saveImage: ImageView
+    private lateinit var saveImage: ImageView
     private lateinit var saveCounter : TextView
+    private lateinit var likeCounter : TextView
     //region Unused necessary ones
     class SectionViewHolder(var view: SectionFragmentRecyclerRowBinding) : ViewHolder(view.root) {}
 
@@ -51,13 +50,18 @@ class SectionFragmentRecyclerRowAdapter(var allSectionsList : MutableList<Sectio
     //endregion
     fun assignCardViewComponents(holder : SectionViewHolder, position : Int)
     {
-        holder.view.titleText.text = makeTitleFromEpisodeAndSeasonString(allSectionsList[position].seasonAndEpisode)
-        holder.view.contentText.text = allSectionsList[position].content
-        holder.view.urlText.text = allSectionsList[position].url
+        val currentSection : Section = allSectionsList.get(position)
+        holder.view.titleText.text = makeTitleFromEpisodeAndSeasonString(currentSection.seasonAndEpisode)
+        holder.view.contentText.text = currentSection.content
+        holder.view.urlText.text = currentSection.url
+        holder.view.likeCounter.text = currentSection.likeCount.toString()
+        holder.view.saveCounter.text = currentSection.saveCount.toString()
+
         titleText = holder.view.titleText
         contentText = holder.view.contentText
         urlText = holder.view.urlText
         saveCounter = holder.view.saveCounter
+        likeCounter = holder.view.likeCounter
     }
     fun initliazeSetOnClickListeners(holder : SectionViewHolder, position : Int)
     {
@@ -82,7 +86,7 @@ class SectionFragmentRecyclerRowAdapter(var allSectionsList : MutableList<Sectio
         assignCardViewComponents(holder, position)
         initliazeSetOnClickListeners(holder, position)
 
-        animateImages(listOf(likeImage, saveImage),allSectionsList[position].id,auth,database,null,allSectionsList[position] ,position, saveCounter)
+        animateImages(listOf(likeImage, saveImage),allSectionsList[position].id,auth,database,null,allSectionsList[position], saveCounter, likeCounter)
         animateCardView(cardView,allSectionsList[position].id,allSectionsList,auth,database, position)
 
         initButtons(likeImage,saveImage, allSectionsList[position].id,auth,database, allSectionsList[position],true )

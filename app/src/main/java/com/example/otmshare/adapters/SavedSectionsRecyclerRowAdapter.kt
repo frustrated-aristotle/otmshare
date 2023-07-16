@@ -54,12 +54,19 @@ class SavedSectionsRecyclerRowAdapter(var savedSectionsList : MutableList<Sectio
 
     fun assignCardViewComponents(holder : SectionViewHolder, position : Int)
     {
-        holder.view.titleText.text = makeTitleFromEpisodeAndSeasonString(savedSectionsList[position].seasonAndEpisode)
-        holder.view.contentText.text = savedSectionsList[position].content
-        holder.view.urlText.text = savedSectionsList[position].url
+        val currentSection = savedSectionsList.get(position)
+        holder.view.titleText.text = makeTitleFromEpisodeAndSeasonString(currentSection.seasonAndEpisode)
+        holder.view.contentText.text = currentSection.content
+        holder.view.urlText.text = currentSection.url
+        holder.view.saveCounter.text = currentSection.saveCount.toString()
+        holder.view.likeCounter.text = currentSection.likeCount.toString()
         titleText = holder.view.titleText
         contentText = holder.view.contentText
         urlText = holder.view.urlText
+        saveCounter = holder.view.saveCounter
+        likeCounter = holder.view.likeCounter
+        println("Current section is : " + currentSection.id + " and the save count of it is : " + currentSection.saveCount)
+
     }
     fun initliazeSetOnClickListeners(holder : SectionViewHolder, position : Int)
     {
@@ -86,7 +93,7 @@ class SavedSectionsRecyclerRowAdapter(var savedSectionsList : MutableList<Sectio
         assignCardViewComponents(holder, position)
         initliazeSetOnClickListeners(holder, position)
 
-        animateImages(listOf(likeImage, saveImage),savedSectionsList[position].id,auth,database, cardView,savedSectionsList[position],position,saveCounter)
+        animateImages(listOf(likeImage, saveImage),savedSectionsList[position].id,auth,database, cardView,savedSectionsList[position],saveCounter, likeCounter)
         animateCardView(cardView,savedSectionsList[position].id,savedSectionsList,auth,database, position)
         initButtons(likeImage,saveImage, savedSectionsList[position].id,auth,database,  savedSectionsList[position],false)
     }

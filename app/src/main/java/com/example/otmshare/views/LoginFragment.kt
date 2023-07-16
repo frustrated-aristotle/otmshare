@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.navigation.Navigation
 import com.example.otmshare.util.makeToast
 import com.example.otmshare.databinding.FragmentLoginBinding
+import com.example.otmshare.singleton.SectionSingleton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -25,17 +26,14 @@ class LoginFragment : Fragment() {
     var password = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
     var isLoginTrue : Boolean = false
 
     init {
         isLoginTrue = false
     }
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+    {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         val view = binding.root
         return view
@@ -49,8 +47,11 @@ class LoginFragment : Fragment() {
         if(currentUser != null)
         {
             //We need to create new users in our user database.
-                goTo(view)
+            println("current user is not null")
+            //goTo(view)
         }
+        else
+            println("curent user null")
         binding.buttonSignup.setOnClickListener {
             getInputs()
             if(email!= null && password!= null)
@@ -117,6 +118,7 @@ class LoginFragment : Fragment() {
     {
        val action = LoginFragmentDirections.actionLoginFragmentToAllSectionsFragment()
        Navigation.findNavController(view).navigate(action)
+       SectionSingleton.makeSwipersActive()
     }
 
 

@@ -70,7 +70,9 @@ class SavedSectionsFragment : Fragment() {
                                     val seasonAndEpisode = doc.get("seasonAndEpisode") as String
                                     val url = doc.get("url") as String
                                     val docID = doc.get("id") as Long
-                                    val section = Section(seasonAndEpisode,content,url,0,0, id = docID)
+                                    val saveCount = (doc.get("saveCount") as Long).toInt()
+                                    val likeCount = (doc.get("likeCount") as Long).toInt()
+                                    val section = Section(seasonAndEpisode,content,url,saveCount,likeCount, id = docID)
                                     sections.add(section)
                                     adapter.savedSectionsList = sections
                                     adapter.notifyDataSetChanged()

@@ -60,8 +60,8 @@ fun animateImages(
     db: FirebaseFirestore,
     cardView: CardView ?,
     section : Section,
-    position: Int,
-    saveCounter : TextView
+    saveCounter : TextView,
+    likeCounter : TextView
 )
 {
     var imgView : ImageView
@@ -95,7 +95,7 @@ fun animateImages(
                     imgView.scaleY = 1.0f
                     if (i == 0)//Like Image
                     {
-                        likeSection(loopsSectionID, view, auth, db, section)
+                        likeSection(loopsSectionID, view, auth, db, section, likeCounter)
                     }
                     else//Save Image
                     {

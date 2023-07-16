@@ -9,6 +9,7 @@
     tools:context=".views.MainActivity">
 
     <com.google.android.material.tabs.TabLayout
+        android:visibility="gone"
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,12 +20,23 @@
         android:contentDescription="@string/app_name"/>
 
 
+
     <androidx.viewpager2.widget.ViewPager2
+        android:visibility="gone"
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView5"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/section_nav" />
+    />
+    <!--
+ <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
@@ -39,7 +51,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/section_nav"/>
-    <!--
-
    -->
 </LinearLayout>

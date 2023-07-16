@@ -1,6 +1,7 @@
 package com.example.otmshare.util
 
 import android.widget.ImageView
+import android.widget.TextView
 import com.example.otmshare.R
 import com.example.otmshare.sections.Section
 import com.example.otmshare.singleton.SectionSingleton
@@ -19,7 +20,7 @@ fun initButtons(
     auth: FirebaseAuth,
     database: FirebaseFirestore,
     currentSection: Section,
-    isAllSections : Boolean
+    isAllSections : Boolean,
 ) {
     val currentUserID = auth.currentUser!!.uid
     val userCollection = database.collection("User")
@@ -59,4 +60,23 @@ fun splitSectionStrings(sectionString : String) : MutableList<String>
     val splittedSections = sectionString.split(".")
 
     return splittedSections.toMutableList()
+}
+
+fun initCounters(db : FirebaseFirestore)
+{
+    val sectionsCollectionRef = db.collection("Section")
+    sectionsCollectionRef.get()
+        .addOnSuccessListener { sections ->
+            for (section in sections)
+            {
+                val mainSectionID = (section.get("id") as Long).toInt()
+                for (sec in SectionSingleton.allSectionsUpdated)
+                {
+                    if (mainSectionID == section.id.toInt())
+                    {
+                        //This makes us able to get
+                    }
+                }
+            }
+        }
 }
