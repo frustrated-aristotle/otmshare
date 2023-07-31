@@ -25,7 +25,9 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="text"
-        android:hint="Content" />
+        android:hint="Content"
+        android:fontFamily="@font/mainfont"
+        />
 
     <EditText
         android:layout_margin="30dp"

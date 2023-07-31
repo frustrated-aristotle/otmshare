@@ -7,7 +7,6 @@ import com.example.otmshare.R
 import com.example.otmshare.sections.Section
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import org.w3c.dom.Text
 
 
 fun saveSection(
@@ -16,22 +15,25 @@ fun saveSection(
     auth: FirebaseAuth,
     db: FirebaseFirestore,
     cardView: CardView ?,
-    currentSection: Section,
+    section: Section,
     saveCounter : TextView
 ) {
-    if (currentSection.isSaveClicked == false)
+    if (section.isSaveClicked == false)
     {
-        currentSection.isSaveClicked = true
+        section.isSaveClicked = true
         view.background = view.context.getDrawable(R.drawable.baseline_turned_in_24)
         likeOrSaveImage(id, "savedSections", auth, db)
         modifyAmount(id.toInt(), db, 1, "saveCount",saveCounter)
+        section.saveCount += 1
+
     }
     else
     {
-        currentSection.isSaveClicked = false
+        section.isSaveClicked = false
         view.background = view.context.getDrawable(R.drawable.baseline_turned_in_not_24)
         deleteLikedOrSavedImage(id, "savedSections", auth, db)
         modifyAmount(id.toInt(), db, -1, "saveCount",saveCounter)
+        section.saveCount -= 1
         cardView.let {
             it?.visibility = View.GONE
         }
@@ -54,6 +56,7 @@ fun likeSection(
         view.background = view.context.getDrawable(R.drawable.baseline_thumb_up_alt_24)
         likeOrSaveImage(loopsSectionID, "likedSections", auth, db)
         modifyAmount(loopsSectionID.toInt(), db, 1, "likeCount",counter)
+        section.likeCount += 1
         //SectionSingleton.addToList(loopsSectionID, SectionSingleton.WantedStringType.SAVED)
     }
     else
@@ -62,6 +65,7 @@ fun likeSection(
         view.background = view.context.getDrawable(R.drawable.baseline_thumb_up_off_alt_x)
         deleteLikedOrSavedImage(loopsSectionID, "likedSections", auth, db)
         modifyAmount(loopsSectionID.toInt(), db, -1, "likeCount",counter)
+        section.likeCount -= 1
 
     }
 }

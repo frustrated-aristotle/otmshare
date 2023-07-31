@@ -40,18 +40,24 @@ class CreatingSections : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        idNum = getID()
         binding.buttonSave.setOnClickListener {
             var hash = hashMapOf<String, Any>()
             getVars()
-            hash.put("seasonAndEpisode", seasonAndEpisode)
             hash.put("content", content)
+            hash.put("id", idNum)
+            hash.put("isActive", true)
+            hash.put("likeCount", 0)
+            hash.put("saveCount", 0)
+            hash.put("seasonAndEpisode", seasonAndEpisode)
             hash.put("url", url)
-            hash.put("id", getID())
+
             database.collection("Section").add(hash)
                 .addOnCompleteListener {task ->
                     if (task.isSuccessful)
                     {
-                        Toast.makeText(view.context, "Saved", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(view.context, "Saved" +idNum, Toast.LENGTH_SHORT).show()
+                        idNum++
                     }
                 }
                 .addOnFailureListener{exception ->
@@ -79,6 +85,7 @@ class CreatingSections : Fragment() {
         {
             println("Exception : " + e)
         }
+
         return idNum
     }
     private fun getVars()
